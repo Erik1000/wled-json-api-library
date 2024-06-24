@@ -1,8 +1,7 @@
-use serde;
-use serde::{Serialize, Deserialize};
 use crate::errors::WledJsonApiError;
 use crate::structures::none_function;
-
+use serde;
+use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,7 +36,7 @@ pub struct State {
     #[serde(default = "none_function")]
     pub psave: Option<u8>,
 
-    /// -1 to 0; 	ID of currently set playlist. For now, this sets the preset cycle feature, -1 is off and 0 is on.
+    /// -1 to 0;   ID of currently set playlist. For now, this sets the preset cycle feature, -1 is off and 0 is on.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "none_function")]
     pub pl: Option<i8>,
@@ -93,22 +92,19 @@ pub struct State {
     pub seg: Option<Vec<Seg>>,
 }
 
-
-impl TryInto<String> for &State{
+impl TryInto<String> for &State {
     type Error = WledJsonApiError;
     fn try_into(self) -> Result<String, WledJsonApiError> {
-        serde_json::to_string(self).map_err(|e| {WledJsonApiError::SerdeError(e)})
+        serde_json::to_string(self).map_err(WledJsonApiError::SerdeError)
     }
 }
 
-impl TryFrom<&str> for State{
+impl TryFrom<&str> for State {
     type Error = WledJsonApiError;
     fn try_from(str_in: &str) -> Result<State, WledJsonApiError> {
-        serde_json::from_str(str_in).map_err(|e| {WledJsonApiError::SerdeError(e)})
+        serde_json::from_str(str_in).map_err(WledJsonApiError::SerdeError)
     }
 }
-
-
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -144,11 +140,9 @@ pub struct Nl {
     pub rem: Option<i16>,
 }
 
-
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Udpn {
-
     /// Send WLED broadcast (UDP sync) packet on state change
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "none_function")]
@@ -208,7 +202,7 @@ pub struct Seg {
     #[serde(default = "none_function")]
     pub spc: Option<u8>,
 
-    /// -len+1 to len; 	Offset (how many LEDs to rotate the virtual start of the segments, available since 0.13.0)
+    /// -len+1 to len;  Offset (how many LEDs to rotate the virtual start of the segments, available since 0.13.0)
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(default = "none_function")]
     pub of: Option<i16>,
@@ -329,9 +323,6 @@ pub struct Seg {
     pub m12: Option<u8>,
 }
 
-
-
-
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Playlist {
@@ -361,7 +352,6 @@ pub struct Playlist {
     pub end: Option<u8>,
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::structures::state::State;
@@ -374,7 +364,5 @@ mod tests {
         println!("State object: {:?}", a);
         let b: String = a.try_into().unwrap();
         println!("converted object: {:?}", b);
-
-
     }
 }
